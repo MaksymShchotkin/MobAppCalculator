@@ -13,6 +13,9 @@ class CalculatorApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: CalculatorHomePage(),
+      routes: {
+        '/converter': (context) => ConverterPage(),
+      },
     );
   }
 }
@@ -150,8 +153,83 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
                     buildButton("="),
                   ],
                 ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        child: Text(
+                          "KM to Miles",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/converter');
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ],
             )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ConverterPage extends StatefulWidget {
+  @override
+  _ConverterPageState createState() => _ConverterPageState();
+}
+
+class _ConverterPageState extends State<ConverterPage> {
+  final TextEditingController _controller = TextEditingController();
+  String _result = "";
+
+  void _convert() {
+    double kilometers = double.tryParse(_controller.text) ?? 0;
+    double miles = kilometers * 0.621371;
+    setState(() {
+      _result = "$miles miles";
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Kilometer to Mile Converter'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: <Widget>[
+            TextField(
+              controller: _controller,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Enter kilometers',
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _convert,
+              child: Text('Convert'),
+            ),
+            SizedBox(height: 20),
+            Text(
+              _result,
+              style: TextStyle(fontSize: 20),
+            ),
           ],
         ),
       ),
